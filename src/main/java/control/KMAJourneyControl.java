@@ -16,10 +16,10 @@ public class KMAJourneyControl implements ActionListener {
 		
 		switch(ac) {
 		case " Fetch":{
+		this.view.fetch();
+			
+			break; 	}	
 		
-			this.view.fetch();
-			break; 		
-		}
 		case "Được phát triển bởi NguyenVanPhuc":{
 			
 			this.view.hienThiAbout();

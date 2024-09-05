@@ -34,8 +34,8 @@ public class testView {
 //		    session.save(a);
 //			tr.commit();
 //			session.close();}
-	//KMAJourneyView ex = new KMAJourneyView();
-   LoginView ex  = new LoginView();
+	KMAJourneyView ex = new KMAJourneyView();
+   //LoginView ex  = new LoginView();
 			
 }
 }

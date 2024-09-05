@@ -7,8 +7,13 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.net.URL;
+import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -64,8 +69,9 @@ public class KMAJourneyView extends JFrame {
 	private JTextField lop;
 	private JTextField hovaten;
 	private JTextField trangthai;
-	private JTextField gpa;
 	private JComboBox comboBox;
+	private JTextField gpa;
+	private JTextField top;
 
 	public KMAJourneyView() {
 		
@@ -197,7 +203,7 @@ public class KMAJourneyView extends JFrame {
 	
 	JLabel lblNewLabel_2_1 = new JLabel("Mã sinh viên : ");
 	lblNewLabel_2_1.setFont(new Font("Arial", Font.BOLD, 14));
-	lblNewLabel_2_1.setBounds(209, 540, 102, 29);
+	lblNewLabel_2_1.setBounds(209, 537, 102, 29);
 	contentPane.add(lblNewLabel_2_1);
 	
 	masinhvien = new JTextField();
@@ -208,7 +214,7 @@ public class KMAJourneyView extends JFrame {
 	
 	JLabel lblNewLabel_2_1_1 = new JLabel("Khóa : ");
 	lblNewLabel_2_1_1.setFont(new Font("Arial", Font.BOLD, 14));
-	lblNewLabel_2_1_1.setBounds(209, 573, 92, 22);
+	lblNewLabel_2_1_1.setBounds(209, 575, 92, 22);
 	contentPane.add(lblNewLabel_2_1_1);
 	
 	khoa = new JTextField();
@@ -224,23 +230,23 @@ public class KMAJourneyView extends JFrame {
 	
 	JLabel lblNewLabel_2_1_1_2 = new JLabel("Họ và tên : ");
 	lblNewLabel_2_1_1_2.setFont(new Font("Arial", Font.BOLD, 14));
-	lblNewLabel_2_1_1_2.setBounds(559, 541, 92, 27);
+	lblNewLabel_2_1_1_2.setBounds(559, 538, 92, 27);
 	contentPane.add(lblNewLabel_2_1_1_2);
 	
 	JLabel lblNewLabel_2_1_1_2_1 = new JLabel("Trạng thái : ");
 	lblNewLabel_2_1_1_2_1.setFont(new Font("Arial", Font.BOLD, 14));
-	lblNewLabel_2_1_1_2_1.setBounds(559, 571, 92, 27);
+	lblNewLabel_2_1_1_2_1.setBounds(559, 573, 92, 27);
 	contentPane.add(lblNewLabel_2_1_1_2_1);
 	
 	JLabel lblNewLabel_2_1_1_2_2 = new JLabel("Lọc theo : ");
 	lblNewLabel_2_1_1_2_2.setFont(new Font("Arial", Font.BOLD, 14));
-	lblNewLabel_2_1_1_2_2.setBounds(559, 606, 92, 27);
+	lblNewLabel_2_1_1_2_2.setBounds(559, 608, 92, 27);
 	contentPane.add(lblNewLabel_2_1_1_2_2);
 	
 	lop = new JTextField();
 	lop.setFont(new Font("Arial", Font.PLAIN, 16));
 	lop.setColumns(10);
-	lop.setBounds(311, 612, 222, 24);
+	lop.setBounds(311, 608, 222, 24);
 	contentPane.add(lop);
 	
 	hovaten = new JTextField();
@@ -262,8 +268,8 @@ public class KMAJourneyView extends JFrame {
 	 comboBox.addItem("Tất cả các môn");
      comboBox.addItem("Lọc môn ĐẠT");
      comboBox.addItem("Lọc môn TRƯỢT");
+     comboBox.addItem("Lọc theo kì gần nhất");
      comboBox.addItem("Xếp hạng theo lớp");
-     comboBox.addItem("Xếp hạng theo kì gần nhất");
      
      
 	contentPane.add(comboBox);
@@ -272,7 +278,7 @@ public class KMAJourneyView extends JFrame {
 	btnNewButton_1.addActionListener(actionListener);
 	btnNewButton_1.setBackground(new Color(255, 255, 255));
 	btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-	btnNewButton_1.setBounds(874, 612, 68, 23);
+	btnNewButton_1.setBounds(876, 612, 68, 23);
 	contentPane.add(btnNewButton_1);
 	
 	JLabel lblNewLabel_4 = new JLabel("New label");
@@ -298,15 +304,27 @@ public class KMAJourneyView extends JFrame {
 	
 	JLabel lblNewLabel_5 = new JLabel("GPA :");
 	lblNewLabel_5.setFont(new Font("Arial", Font.BOLD, 14));
-	lblNewLabel_5.setBounds(874, 544, 37, 21);
+	lblNewLabel_5.setBounds(876, 541, 37, 21);
 	contentPane.add(lblNewLabel_5);
+	
+	JLabel lblNewLabel_5_1 = new JLabel("TOP :");
+	lblNewLabel_5_1.setFont(new Font("Arial", Font.BOLD, 14));
+	lblNewLabel_5_1.setBounds(876, 576, 37, 21);
+	contentPane.add(lblNewLabel_5_1);
 	
 	gpa = new JTextField();
 	gpa.setHorizontalAlignment(SwingConstants.CENTER);
-	gpa.setFont(new Font("Arial", Font.PLAIN, 16));
+	gpa.setFont(new Font("Arial", Font.BOLD, 16));
 	gpa.setColumns(10);
-	gpa.setBounds(921, 538, 60, 24);
+	gpa.setBounds(923, 538, 47, 24);
 	contentPane.add(gpa);
+	
+	top = new JTextField();
+	top.setHorizontalAlignment(SwingConstants.CENTER);
+	top.setFont(new Font("Arial", Font.BOLD, 16));
+	top.setColumns(10);
+	top.setBounds(923, 573, 47, 24);
+	contentPane.add(top);
 
 	
 	
@@ -337,13 +355,14 @@ public class KMAJourneyView extends JFrame {
 			    //nếu chỉ getHocPhan thì chỉ trả về con trỏ của list<HocPhan> mà chưa có dữ liệu phải thực sự truy cập đến các học phần thì dữ liệu mới được tải
 			    // trong phuong thức getHocPhan phai gọi tới từng học phần một để lấy dữ liệu
 			    // hoặc sử dựng FetchType.EAGER đào lấy hết dữ liệu của sinhvien
+			    if(this.sinhVienModel != null) {
+			    this.hocPhanModel =  this.sinhVienModel.getHocPhan();}
 			    
-			    this.hocPhanModel =  this.sinhVienModel.getHocPhan();
-			    
-			   if(this.sinhVienModel.getGpa() == 0) {
+			   if(this.sinhVienModel.getGpa() == 0) 
+			   {
 			   double gpaValue = this.tinhGPA();
-		        BigDecimal bd = new BigDecimal(gpaValue);
-		        gpaValue = (bd.setScale(2, RoundingMode.HALF_UP)).doubleValue();
+		       BigDecimal bd = new BigDecimal(gpaValue);
+		       gpaValue = (bd.setScale(2, RoundingMode.HALF_UP)).doubleValue();
 			   String masv2 = this.sinhVienModel.getMaSinhVien();
 			   this.sinhVienModel.setGpa(gpaValue);
 			    
@@ -364,10 +383,11 @@ public class KMAJourneyView extends JFrame {
 	}
     
 	public void fetch() {
+		
 		this.xoaBang();
 		String masv = this.masinhvienfetch.getText()+"";
 		masv = masv.toUpperCase();
-		System.out.println(masv);
+	
 		//Truy vấn thông tin từ database
 	   this.getSession(masv);
 	 
@@ -379,8 +399,8 @@ public class KMAJourneyView extends JFrame {
 		   this.taoBangDiemChiTiet(x,stt);
 		   stt++;
 	   }
-	   System.out.println(this.sinhVienModel.toString());
-	  
+	//   System.out.println(this.sinhVienModel.toString());
+	   this.top.setText("");
 	}
 	
 	    
@@ -409,22 +429,99 @@ public class KMAJourneyView extends JFrame {
 		
 			   sum /= count;
 		       sum = sum/10*4;
-			   System.out.println(this.gpa);
+			   return sum;
+			   }
+	    private double tinhGPAtheoki(List<HocPhan> list) {
+			double sum=0;
+			double count=0;
+			   for(HocPhan x: list) {
+				   if(x.getTenHocPhan().contains("Giáo dục thể chất")) 
+					   continue;
+				    sum += (x.getDiemTongKet()*x.getSoTinchi());
+				    count+= x.getSoTinchi();
+				    }
+		
+			   sum /= count;
+		       sum = sum/10*4;
 			   return sum;
 			   }
 
 		public void locBang() {
 			if(this.comboBox.getSelectedItem().equals("Lọc môn ĐẠT")) {
+				
 				this.locHocPhanDat();
 			}
 			else if (this.comboBox.getSelectedItem().equals("Lọc môn TRƯỢT")){
 				this.locHocPhanTruot();
 			}
 			else if(this.comboBox.getSelectedItem().equals("Tất cả các môn")){
-				this.fetch();
+			}
+			else if(this.comboBox.getSelectedItem().equals("Lọc theo kì gần nhất")) {
+				this.top.setText("");
+				this.xoaBang();
+				int hocki = this.getHocKy();
+				this.locTheoHocKiGanNhat(hocki);
+			}
+			else if(this.comboBox.getSelectedItem().equals("Xếp hạng theo lớp")){
+				this.xepHangLop(this.lop.getText());
 			}
 			
 		}
+		public int getHocKy(){
+			 SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+				if (sessionFactory != null) {
+					Session session = sessionFactory.openSession();
+					Transaction tr = session.beginTransaction();
+			
+				  String hql = "Select max(hocKi) from HocPhan";
+				  Query query = session.createQuery(hql);
+				  Object result = query.uniqueResult();
+				 
+				 
+			
+					tr.commit();
+					session.close();
+					return (int)result ;
+					}
+				return -1;
+				
+		}
+		public void locTheoHocKiGanNhat(int hocki){
+			String masv = this.masinhvienfetch.getText()+"";
+			masv = masv.toUpperCase();
+			List<HocPhan> list = null;
+			 SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+				if (sessionFactory != null) {
+					Session session = sessionFactory.openSession();
+					Transaction tr = session.beginTransaction();
+			
+				  String hql = "from HocPhan  where sinhvien_id =: a and hocKi =: x";
+				  Query query = session.createQuery(hql);
+				  query.setParameter("a", masv);
+				  query.setParameter("x", hocki);
+			
+				   list = query.list();
+				  
+			
+					tr.commit();
+					session.close();
+					
+					}
+				int stt = 1;
+				  for(HocPhan x: list) {
+					   this.taoBangDiemChiTiet(x,stt);
+					   stt++;
+				   }
+				  double gpaValue = this.tinhGPAtheoki(list);
+			       BigDecimal bd = new BigDecimal(gpaValue);
+			       gpaValue = (bd.setScale(2, RoundingMode.HALF_UP)).doubleValue();
+				  this.gpa.setText(gpaValue+"");
+				
+				
+				
+		}
+		
+		
 		public void exit() {
 			int luaChon = JOptionPane.showConfirmDialog(
 				    this,
@@ -458,7 +555,7 @@ public class KMAJourneyView extends JFrame {
 			this.xoaBang();
 			List<HocPhan> list = new ArrayList<HocPhan>();
 			for(HocPhan x: this.hocPhanModel) {
-				if(x.getDiemThi() < 4 && x.getDiemTongKet()  < 4) {
+				if(x.getDiemThi() < 4 || x.getDiemTongKet()  < 4) {
 					list.add(x);
 				}
 			}
@@ -472,6 +569,43 @@ public class KMAJourneyView extends JFrame {
 				i++;
 			}
 		}
+		
+		public void xepHangLop(String lop) {
+			 List<Double> resultlist=new ArrayList<Double>();
+			
+			 SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+				if (sessionFactory != null) {
+					Session session = sessionFactory.openSession();
+					Transaction tr = session.beginTransaction();
+			
+				  String hql = "SELECT gpa from SinhVien where lop =: aa";
+				  Query query = session.createQuery(hql);
+				  query.setParameter("aa", lop);
+			
+			     resultlist = query.list();
+			  
+				  
+					tr.commit();
+					session.close();
+					
+				}
+				 Collections.sort(resultlist, new Comparator<Double>() {
+			            @Override
+			            public int compare(Double o1, Double o2) {
+			                return o2.compareTo(o1); //
+			            }
+			        });
+			
+				Double find = this.sinhVienModel.getGpa();
+				
+				int result = resultlist.indexOf(find)+1;
+				System.out.println(result);
+				this.top.setText(result+"");
+				
+			
+		}
+		
+		
 	}
 	   
 	   
