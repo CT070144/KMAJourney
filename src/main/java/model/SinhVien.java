@@ -8,6 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+
 
 
 @Entity
@@ -19,14 +22,11 @@ public class SinhVien {
     private String khoa;
     private String trangThai = "ĐANG HỌC";
     private double gpa;
-    @OneToMany(mappedBy = "sinhVien", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sinhVien", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<HocPhan> danhSachHocPhan;
 
 
-    public SinhVien() {
-    }
-
-
+    public SinhVien() { }
     
     public SinhVien(String maSinhVien, String tenSinhvien, String lop, String khoa, 
 			List<HocPhan> danhSachHocPhan) {
@@ -34,10 +34,9 @@ public class SinhVien {
 		this.tenSinhvien = tenSinhvien;
 		this.lop = lop;
 		this.khoa = khoa;
+		
 		this.danhSachHocPhan = danhSachHocPhan;
 	}
-
-
 
 	public String getMaSinhVien() {
         return maSinhVien;
@@ -72,7 +71,12 @@ public class SinhVien {
     }
 
     public List<HocPhan> getHocPhan() {
-        return danhSachHocPhan;
+    	return this.danhSachHocPhan;
+//        List<HocPhan> res = new ArrayList<HocPhan>();
+//        for(HocPhan x: this.danhSachHocPhan) {
+//        	res.add(x);
+//        }
+//        return res;
     }
 
     public void setHocPhan(List<HocPhan> hocPhan) {
@@ -106,7 +110,7 @@ public class SinhVien {
 	@Override
     public String toString() {
         return "SinhVien [maSinhVien=" + maSinhVien + ", tenSinhvien=" + tenSinhvien + ", lop=" + lop + ", khoa=" + khoa
-               + "]";
+               + ", GPA = " + gpa + "]";
     }
 
 

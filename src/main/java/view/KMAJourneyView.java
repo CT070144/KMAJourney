@@ -31,6 +31,7 @@ import javax.swing.table.DefaultTableModel;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import control.KMAJourneyControl;
 import model.HocPhan;
@@ -40,15 +41,18 @@ import util.HibernateUtil;
 
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollBar;
 import javax.swing.JList;
 import java.awt.Color;
+import javax.swing.SwingConstants;
 
 
 
 public class KMAJourneyView extends JFrame {
-    private SinhVien sinhVienModel;
+    private SinhVien sinhVienModel = null;
     private List<HocPhan> hocPhanModel;
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -61,8 +65,10 @@ public class KMAJourneyView extends JFrame {
 	private JTextField hovaten;
 	private JTextField trangthai;
 	private JTextField gpa;
+	private JComboBox comboBox;
 
 	public KMAJourneyView() {
+		
 		sinhVienModel = new SinhVien();
 		hocPhanModel = new ArrayList<HocPhan>();
 		this.setTitle("KMA Journey");
@@ -73,10 +79,12 @@ public class KMAJourneyView extends JFrame {
 	KMAJourneyControl actionListener = new KMAJourneyControl(this);	
 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	setBounds(100, 100, 1050, 711);
+	this.setLocationRelativeTo(null);
 	
 	contentPane = new JPanel();
 	contentPane.setBackground(new Color(255, 255, 255));
 	contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+	
 
 	setContentPane(contentPane);
 	contentPane.setLayout(null);
@@ -103,7 +111,7 @@ public class KMAJourneyView extends JFrame {
 	mnNewMenu.add(separator);
 	
 	JMenuItem mntmNewMenuItem_2 = new JMenuItem("Exit");
-	//mntmNewMenuItem_2.addActionListener(actionListener);
+	mntmNewMenuItem_2.addActionListener(actionListener);
 	mnNewMenu.add(mntmNewMenuItem_2);
 	
 	JMenu mnNewMenu_1 = new JMenu("About");
@@ -118,7 +126,7 @@ public class KMAJourneyView extends JFrame {
 	
 	JLabel lblNewLabel = new JLabel("KMA Journey");
 	lblNewLabel.setFont(new Font("Dubai Medium", Font.BOLD, 30));
-	lblNewLabel.setBounds(792, 44, 179, 60);
+	lblNewLabel.setBounds(802, 46, 179, 60);
 	contentPane.add(lblNewLabel);
 	
 	JLabel lblNewLabel_1 = new JLabel("New label");
@@ -138,6 +146,7 @@ public class KMAJourneyView extends JFrame {
 	masinhvienfetch.setColumns(10);
 	
 	JButton btnNewButton = new JButton(" Fetch");
+	
 	btnNewButton.addActionListener(actionListener);
 	btnNewButton.setBackground(new Color(255, 255, 255));
 	btnNewButton.setFont(new Font("Microsoft PhagsPa", Font.BOLD, 16));
@@ -192,7 +201,7 @@ public class KMAJourneyView extends JFrame {
 	contentPane.add(lblNewLabel_2_1);
 	
 	masinhvien = new JTextField();
-	masinhvien.setFont(new Font("Arial", Font.PLAIN, 14));
+	masinhvien.setFont(new Font("Arial", Font.PLAIN, 16));
 	masinhvien.setBounds(311, 538, 222, 24);
 	contentPane.add(masinhvien);
 	masinhvien.setColumns(10);
@@ -203,7 +212,7 @@ public class KMAJourneyView extends JFrame {
 	contentPane.add(lblNewLabel_2_1_1);
 	
 	khoa = new JTextField();
-	khoa.setFont(new Font("Arial", Font.PLAIN, 14));
+	khoa.setFont(new Font("Arial", Font.PLAIN, 16));
 	khoa.setColumns(10);
 	khoa.setBounds(311, 573, 222, 24);
 	contentPane.add(khoa);
@@ -229,30 +238,30 @@ public class KMAJourneyView extends JFrame {
 	contentPane.add(lblNewLabel_2_1_1_2_2);
 	
 	lop = new JTextField();
-	lop.setFont(new Font("Arial", Font.PLAIN, 14));
+	lop.setFont(new Font("Arial", Font.PLAIN, 16));
 	lop.setColumns(10);
 	lop.setBounds(311, 612, 222, 24);
 	contentPane.add(lop);
 	
 	hovaten = new JTextField();
-	hovaten.setFont(new Font("Arial", Font.PLAIN, 14));
+	hovaten.setFont(new Font("Arial", Font.PLAIN, 16));
 	hovaten.setColumns(10);
 	hovaten.setBounds(647, 538, 202, 24);
 	contentPane.add(hovaten);
 	
 	trangthai = new JTextField();
-	trangthai.setFont(new Font("Arial", Font.PLAIN, 14));
+	trangthai.setFont(new Font("Arial", Font.PLAIN, 16));
 	trangthai.setColumns(10);
 	trangthai.setBounds(647, 573, 202, 24);
 	contentPane.add(trangthai);
 	
-	JComboBox comboBox = new JComboBox();
+	 comboBox = new JComboBox();
 	comboBox.setFont(new Font("Arial", Font.PLAIN, 14));
 	comboBox.setBackground(new Color(255, 255, 255));
 	comboBox.setBounds(647, 612, 202, 22);
 	 comboBox.addItem("Tất cả các môn");
-     comboBox.addItem("Các môn ĐẠT");
-     comboBox.addItem("Các môn Trượt");
+     comboBox.addItem("Lọc môn ĐẠT");
+     comboBox.addItem("Lọc môn TRƯỢT");
      comboBox.addItem("Xếp hạng theo lớp");
      comboBox.addItem("Xếp hạng theo kì gần nhất");
      
@@ -260,18 +269,15 @@ public class KMAJourneyView extends JFrame {
 	contentPane.add(comboBox);
 	
 	JButton btnNewButton_1 = new JButton("Lọc");
-	btnNewButton_1.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		}
-	});
+	btnNewButton_1.addActionListener(actionListener);
 	btnNewButton_1.setBackground(new Color(255, 255, 255));
 	btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 14));
 	btnNewButton_1.setBounds(874, 612, 68, 23);
 	contentPane.add(btnNewButton_1);
 	
 	JLabel lblNewLabel_4 = new JLabel("New label");
-	lblNewLabel_4.setIcon(new ImageIcon(KMAJourneyView.class.getResource("/view/0011 (2).jpg")));
-	lblNewLabel_4.setBounds(706, 30, 76, 75);
+	lblNewLabel_4.setIcon(new ImageIcon(KMAJourneyView.class.getResource("/view/Logo Học Viện Kỹ Thuật Mật Mã - ACTVN (1).jpg")));
+	lblNewLabel_4.setBounds(722, 36, 70, 70);
 	contentPane.add(lblNewLabel_4);
 	
 	JLabel lblNewLabel_3_1 = new JLabel("THÔNG TIN SINH VIÊN");
@@ -296,18 +302,16 @@ public class KMAJourneyView extends JFrame {
 	contentPane.add(lblNewLabel_5);
 	
 	gpa = new JTextField();
-	gpa.setFont(new Font("Arial", Font.PLAIN, 14));
+	gpa.setHorizontalAlignment(SwingConstants.CENTER);
+	gpa.setFont(new Font("Arial", Font.PLAIN, 16));
 	gpa.setColumns(10);
 	gpa.setBounds(921, 538, 60, 24);
 	contentPane.add(gpa);
-	
-	
 
 	
 	
-	
-this.setVisible(true);	
-	
+   this.setVisible(true);	
+  
 
 	}
 	
@@ -321,6 +325,7 @@ this.setVisible(true);
 		this.lop.setText(this.sinhVienModel.getLop());	
 		this.khoa.setText(this.sinhVienModel.getKhoa());
 		this.trangthai.setText(this.sinhVienModel.getTrangThai());
+		this.gpa.setText(this.sinhVienModel.getGpa()+"");
 	}
 	public void getSession(String masv){
 		 SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
@@ -328,34 +333,54 @@ this.setVisible(true);
 				Session session = sessionFactory.openSession();
 				Transaction tr = session.beginTransaction();
 		
-			  
-			    
 			    this.sinhVienModel = session.get(SinhVien.class,masv);
+			    //nếu chỉ getHocPhan thì chỉ trả về con trỏ của list<HocPhan> mà chưa có dữ liệu phải thực sự truy cập đến các học phần thì dữ liệu mới được tải
+			    // trong phuong thức getHocPhan phai gọi tới từng học phần một để lấy dữ liệu
+			    // hoặc sử dựng FetchType.EAGER đào lấy hết dữ liệu của sinhvien
+			    
 			    this.hocPhanModel =  this.sinhVienModel.getHocPhan();
-			   
-			    for(HocPhan x: this.hocPhanModel) {
-			    	System.out.println(x.toString());
-			    }
-			  
-				
+			    
+			   if(this.sinhVienModel.getGpa() == 0) {
+			   double gpaValue = this.tinhGPA();
+		        BigDecimal bd = new BigDecimal(gpaValue);
+		        gpaValue = (bd.setScale(2, RoundingMode.HALF_UP)).doubleValue();
+			   String masv2 = this.sinhVienModel.getMaSinhVien();
+			   this.sinhVienModel.setGpa(gpaValue);
+			    
+			    String hql = "UPDATE SinhVien SET gpa = :a WHERE maSinhVien = :masv";
+			    Query query = session.createQuery(hql);
+			    query.setParameter("a", gpaValue);  // gpaValue là giá trị GPA mới mà bạn muốn cập nhật
+			    query.setParameter("masv", masv2);
+			    int result = query.executeUpdate();
+			
+
+			    int res = query.executeUpdate();
+		   }
+			    
+		
 				tr.commit();
 				session.close();}
 			
 	}
     
 	public void fetch() {
+		this.xoaBang();
 		String masv = this.masinhvienfetch.getText()+"";
+		masv = masv.toUpperCase();
+		System.out.println(masv);
 		//Truy vấn thông tin từ database
 	   this.getSession(masv);
 	 
 	   // Đẩy thông tin vào view
-	   this.thongTinSinhVien();
-	    List<HocPhan> list =  this.hocPhanModel;
+	    this.thongTinSinhVien();
+	   
 	    int stt=1;
-	   for(HocPhan x: list ) {
+	   for(HocPhan x: this.hocPhanModel) {
 		   this.taoBangDiemChiTiet(x,stt);
 		   stt++;
 	   }
+	   System.out.println(this.sinhVienModel.toString());
+	  
 	}
 	
 	    
@@ -372,6 +397,81 @@ this.setVisible(true);
 	            hp.getDiemChu()
 	        });
 	    }
+	    private double tinhGPA() {
+			double sum=0;
+			double count=0;
+			   for(HocPhan x: this.sinhVienModel.getHocPhan()) {
+				   if(x.getTenHocPhan().contains("Giáo dục thể chất")) 
+					   continue;
+				    sum += (x.getDiemTongKet()*x.getSoTinchi());
+				    count+= x.getSoTinchi();
+				    }
+		
+			   sum /= count;
+		       sum = sum/10*4;
+			   System.out.println(this.gpa);
+			   return sum;
+			   }
+
+		public void locBang() {
+			if(this.comboBox.getSelectedItem().equals("Lọc môn ĐẠT")) {
+				this.locHocPhanDat();
+			}
+			else if (this.comboBox.getSelectedItem().equals("Lọc môn TRƯỢT")){
+				this.locHocPhanTruot();
+			}
+			else if(this.comboBox.getSelectedItem().equals("Tất cả các môn")){
+				this.fetch();
+			}
+			
+		}
+		public void exit() {
+			int luaChon = JOptionPane.showConfirmDialog(
+				    this,
+				    "Xác nhận thoát khỏi chương trình",
+				    "Exit",
+				    JOptionPane.YES_NO_OPTION);
+			if (luaChon == JOptionPane.YES_OPTION) {
+				System.exit(0);
+			}
+		}
+		
+		public void xoaBang() {
+			
+			while (table.getRowCount() > 0) {
+			                    ((DefaultTableModel) table.getModel()).removeRow(0);
+			                }
+		
+		}
+		public void locHocPhanDat() {
+			this.xoaBang();
+			List<HocPhan> list = new ArrayList<HocPhan>();
+			for(HocPhan x: this.hocPhanModel) {
+				if(x.getDiemThi() > 4 || x.getDiemTongKet() > 4) {
+					list.add(x);
+				}
+			}
+			this.taoBangLoc(list);
+			
+		}
+		public void locHocPhanTruot() {
+			this.xoaBang();
+			List<HocPhan> list = new ArrayList<HocPhan>();
+			for(HocPhan x: this.hocPhanModel) {
+				if(x.getDiemThi() < 4 && x.getDiemTongKet()  < 4) {
+					list.add(x);
+				}
+			}
+			this.taoBangLoc(list);
+			
+		}
+		public void taoBangLoc(List<HocPhan> arr) {
+			int i=1;
+			for(HocPhan a: arr) {
+				this.taoBangDiemChiTiet(a,i);
+				i++;
+			}
+		}
 	}
 	   
 	   

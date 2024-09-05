@@ -24,12 +24,13 @@ public class HocPhan {
     private int soTinchi;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sinhvien_id")
-    private SinhVien sinhVien;
+   SinhVien sinhVien;
     private double diemTongKet;
 
 
     public HocPhan(String tenHocPhan, double diemThanhPhan1, double diemThanhPhan2, double diemThi, int hocKi,
                    int soTinChi, SinhVien sinhVien) {
+    	
         this.tenHocPhan = tenHocPhan;
         this.diemThanhPhan1 = diemThanhPhan1;
         this.diemThanhPhan2 = diemThanhPhan2;
@@ -46,16 +47,10 @@ public class HocPhan {
     @PrePersist
     @PreUpdate
     public void tongKet() {
-        this.diemTongKet = (this.diemThi * 0.7) + (this.diemThanhPhan1 * 0.7 + this.diemThanhPhan2 * 0.3) * 0.3;
+       this.diemTongKet = (this.diemThi * 0.7) + (this.diemThanhPhan1 * 0.7 + this.diemThanhPhan2 * 0.3) * 0.3;
     }
 
-    public int getSTT() {
-        return STT;
-    }
 
-    public void setSTT(int sTT) {
-        STT = sTT;
-    }
 
     public String getTenHocPhan() {
         return tenHocPhan;
@@ -131,7 +126,7 @@ public class HocPhan {
 
     @Override
     public String toString() {
-        return "HocPhan [STT=" + STT + ", tenHocPhan=" + tenHocPhan + ", diemThanhPhan1=" + diemThanhPhan1
+        return "HocPhan [ tenHocPhan=" + tenHocPhan + ", diemThanhPhan1=" + diemThanhPhan1
                 + ", diemThanhPhan2=" + diemThanhPhan2 + ", diemThi=" + diemThi + ", diemTongKet=" + diemTongKet
                 + "]";
     }

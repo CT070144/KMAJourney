@@ -43,8 +43,9 @@ public class LoginView extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		 this.setLocationRelativeTo(null);
 
-		this.setTitle("QUẢN LÝ SINH VIÊN");
+		this.setTitle("KMA Journey");
 		URL url = LoginView.class.getResource("Image.png");
 		Image img = Toolkit.getDefaultToolkit().createImage(url);
 		this.setIconImage(img);
@@ -119,7 +120,7 @@ public class LoginView extends JFrame {
 		contentPane.add(separator_1);
 		
 		username = new JTextField();
-		username.setFont(new Font("Arial", Font.PLAIN, 15));
+		username.setFont(new Font("Arial", Font.PLAIN, 16));
 		username.setBackground(new Color(255, 255, 255));
 		username.setBounds(578, 304, 339, 35);
 		contentPane.add(username);
@@ -132,9 +133,11 @@ public class LoginView extends JFrame {
 	}
 	
 	public void check2() {
-		if(username.getText().equals("phuc")&&password.getText().equals("12345678")) {
+		if(username.getText().equals("CT070144")&&password.getText().equals("123123")) {
 			JOptionPane.showMessageDialog(this, "Login Successfully");
+			
 			KMAJourneyView ex = new KMAJourneyView();
+		
 			this.setVisible(false);
 		}
 		else {

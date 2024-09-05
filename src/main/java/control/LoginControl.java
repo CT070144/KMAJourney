@@ -21,7 +21,7 @@ public class LoginControl implements ActionListener {
 			try {
 			if(sc.equals("Login")) 
 			{
-				
+				 
 			      this.view.check2();
 		     
 			}

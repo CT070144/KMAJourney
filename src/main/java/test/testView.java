@@ -23,25 +23,22 @@ public class testView {
 //			Session session = sessionFactory.openSession();
 //			Transaction tr = session.beginTransaction();
 //	
-//		  
+//		    HocPhan hp = new HocPhan("Tin học đại cương", 8.5, 10, 7.2, 7.7, 'B', 'CT070144');
+//		    hp.
 //		    
-//		    SinhVien res = session.get(SinhVien.class, "CT070144");
-//		    
-//		    System.out.println(res.toString());
-//		    List<HocPhan> hp = res.getHocPhan();
-//		    for(HocPhan x: hp) {
-//		    	System.out.println(x.toString());
-//		    }
-//			
-//			
+//		    SinhVien a = new SinhVien();
+//		    a.setMaSinhVien("CT070144");
+//		    a.setTenSinhvien("Nguyễn Văn Phúc");
+//		    a.setKhoa("Công nghệ thông tin");
+//		    a.setLop("CT7A");
+//		    session.save(a);
 //			tr.commit();
 //			session.close();}
-//	KMAJourneyView ex = new KMAJourneyView();
-	LoginView ex  = new LoginView();
+	//KMAJourneyView ex = new KMAJourneyView();
+   LoginView ex  = new LoginView();
 			
 }
 }
- 
 
 
 
